@@ -4,9 +4,142 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart AI Trader</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f6f8;
+      color: #222;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .balance {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:active {
+      opacity: 0.8;
+    }
+
+    #status {
+      margin-top: 12px;
+      font-size: 14px;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Smart AI Trader</h1>
-  <p>Your AI trading dashboard</p>
+
+  <header>
+    <h1>Smart AI Trader</h1>
+    <p>AI Trading Dashboard</p>
+  </header>
+
+  <div class="container">
+
+    <div class="card">
+      <h2>Paper Trading Account</h2>
+      <p>Cash Balance</p>
+      <div class="balance" id="cash">$0.00</div>
+    </div>
+
+    <div class="card">
+      <h2>Account Status</h2>
+      <p id="accountStatus">Not connected</p>
+    </div>
+
+    <div class="card">
+      <button onclick="loadAccount()">
+        Connect to Alpaca
+      </button>
+
+      <div id="status"></div>
+    </div>
+
+  </div>
+
+  <script>
+
+    const SUPABASE_URL = https://jfxbenywmbmwopzvqvct.supabase.co/rest/vI/
+
+    async function loadAccount() {
+
+      const status = document.getElementById("status");
+
+      status.textContent = "Connecting to Alpaca...";
+
+      try {
+
+        const response = await fetch(
+          SUPABASE_URL + "/functions/v1/dynamic-responder",
+          {
+            method: "GET"
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Connection failed");
+        }
+
+        document.getElementById("cash").textContent =
+          "$" + Number(data.cash).toLocaleString();
+
+        document.getElementById("accountStatus").textContent =
+          data.status;
+
+        status.textContent =
+          "Successfully connected to your Alpaca paper account.";
+
+      } catch (error) {
+
+        status.textContent =
+          "Connection error: " + error.message;
+
+      }
+
+    }
+
+  </script>
+
 </body>
-</html>
+    </html>
