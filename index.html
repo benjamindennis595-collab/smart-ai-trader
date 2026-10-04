@@ -20,8 +20,8 @@
       text-align: center;
     }
 
-    header h1 {
-      margin: 0;
+    h1, h2 {
+      margin-top: 0;
     }
 
     .container {
@@ -41,7 +41,6 @@
     .balance {
       font-size: 28px;
       font-weight: bold;
-      margin-top: 10px;
     }
 
     button {
@@ -52,16 +51,10 @@
       background: #2563eb;
       color: white;
       font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:active {
-      opacity: 0.8;
     }
 
     #status {
-      margin-top: 12px;
-      font-size: 14px;
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -87,33 +80,30 @@
     </div>
 
     <div class="card">
-      <button onclick="loadAccount()">
-        Connect to Alpaca
-      </button>
-
+      <button id="connectButton">Connect to Alpaca</button>
       <div id="status"></div>
     </div>
 
   </div>
 
   <script>
+    const SUPABASE_URL = "YOUR_SUPABASE_URL";
 
-    const SUPABASE_URL = https://jfxbenywmbmwopzvqvct.supabase.co/rest/v1/
+    const button = document.getElementById("connectButton");
+    const status = document.getElementById("status");
 
-    async function loadAccount() {
-
-      const status = document.getElementById("status");
+    button.addEventListener("click", async function () {
 
       status.textContent = "Connecting to Alpaca...";
+      button.disabled = true;
 
       try {
+        const url =
+          SUPABASE_URL + "/functions/v1/dynamic-responder";
 
-        const response = await fetch(
-          SUPABASE_URL + "/functions/v1/dynamic-responder",
-          {
-            method: "GET"
-          }
-        );
+        const response = await fetch(url, {
+          method: "GET"
+        });
 
         const data = await response.json();
 
@@ -128,18 +118,20 @@
           data.status;
 
         status.textContent =
-          "Successfully connected to your Alpaca paper account.";
+          "Connected successfully to Alpaca paper trading.";
 
       } catch (error) {
 
         status.textContent =
-          "Connection error: " + error.message;
+          "Connection failed: " + error.message;
+
+      } finally {
+
+        button.disabled = false;
 
       }
-
-    }
-
+    });
   </script>
 
 </body>
-    </html>
+</html>
